@@ -1,8 +1,8 @@
 # PhishGuard — Phishing Email Detection System
 
-A major project (Python · Flask · SQLAlchemy · pure-Python Naive Bayes) that detects
+A project (Python · Flask · SQLAlchemy · pure-Python Naive Bayes) that detects
 phishing emails using a combination of rule-based heuristics and a machine
-learning text classifier. Built for a 5-member team.
+learning text classifier.
 
 ## Features
 
@@ -18,6 +18,10 @@ learning text classifier. Built for a 5-member team.
 - Per-user scan history stored in a SQLite database (SQLAlchemy ORM)
 - Dashboard with live stats and a paginated history table
 - Explainable results — every verdict lists the exact signals that triggered it
+- SOC-style incident report generator — produces a **True Positive** report
+  (affected entities, escalation reasoning, remediation steps, attack
+  indicators) for phishing/suspicious verdicts, or a **False Positive**
+  report for safe verdicts, downloadable as a `.txt` file
 
 ## Tech stack
 
@@ -32,18 +36,19 @@ learning text classifier. Built for a 5-member team.
 
 ```
 phishing_detector/
-├── app.py                 # App factory, run entry point
-├── config.py               # Configuration (DB path, secret key, etc.)
-├── extensions.py           # Shared db / login_manager instances
+├── app.py                   # App factory, run entry point
+├── config.py                # Configuration (DB path, secret key, etc.)
+├── extensions.py            # Shared db / login_manager instances
 ├── models.py                # User & ScanHistory SQLAlchemy models
 ├── auth.py                  # Auth blueprint (register/login/logout)
-├── main.py                  # Main blueprint (dashboard/scan/history)
+├── main.py                  # Main blueprint (dashboard/scan/history/report)
 ├── train_model.py           # Standalone script to (re)train the ML model
 ├── detection/
 │   ├── heuristics.py        # Rule-based detection engine
 │   ├── ml_model.py          # Pure-Python Naive Bayes classifier
 │   ├── dataset.py           # Sample labeled training data
-│   └── analyzer.py          # Combines heuristics + ML into final verdict
+│   ├── analyzer.py          # Combines heuristics + ML into final verdict
+│   └── report.py            # SOC incident report generator
 ├── templates/                # Jinja2 HTML templates
 ├── static/css, static/js     # Styling & small client-side scripts
 └── requirements.txt
@@ -77,7 +82,9 @@ phishing_detector/
 
 5. **Try it out:** register an account, go to the Dashboard, click
    **"Load phishing sample"** to autofill a demo email, then click
-   **Analyze email** to see the risk score and explanation.
+   **Analyze email** to see the risk score and explanation. From the
+   result page, click **Generate SOC report** to see the full incident
+   report and download it as a `.txt` file.
 
 ## Improving this for your final submission
 
@@ -89,16 +96,6 @@ phishing_detector/
 - Add an admin role that can view all users' scans for demo purposes.
 - Deploy with a production WSGI server (e.g. Gunicorn) behind Nginx, and
   switch `SECRET_KEY` / `DATABASE_URL` to environment variables.
-
-## Suggested 5-person work split
-
-| # | Member | Responsibility | Files |
-|---|--------|-----------------|-------|
-| 1 | Backend/Auth | App factory, authentication, models | `app.py`, `auth.py`, `models.py`, `extensions.py` |
-| 2 | Detection (rules) | Heuristic engine | `detection/heuristics.py` |
-| 3 | Detection (ML) | Dataset, model training, combined scoring | `detection/ml_model.py`, `detection/dataset.py`, `detection/analyzer.py` |
-| 4 | Frontend/UI | Templates, styling, UX | `templates/`, `static/` |
-| 5 | QA/Docs | Testing, README, report, presentation | tests, `README.md`, slide deck |
 
 ## Disclaimer
 
