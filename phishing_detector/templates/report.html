@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Incident report — PhishGuard{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="section-title">
+    <h1 style="font-size:1.6rem;">Incident report</h1>
+    <div style="display:flex; gap:.6rem;">
+      <a href="{{ url_for('main.result', scan_id=record.id) }}" class="btn btn-ghost">← Back to result</a>
+      <a href="{{ url_for('main.report_download', scan_id=record.id) }}" class="btn btn-primary">Download .txt</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="verdict-badge
+      {% if report.classification == 'True Positive' %}verdict-phishing
+      {% else %}verdict-safe{% endif %}">
+      {% if report.classification == 'True Positive' %}⚠ {{ report.classification|upper }}
+      {% else %}✓ {{ report.classification|upper }}{% endif %}
+    </span>
+
+    <h3 class="mt-2">Time of Activity</h3>
+    <p class="mono">{{ report.time_of_activity }}</p>
+
+    <h3 class="mt-2">{{ report.entities_label }}</h3>
+    <ul class="reason-list">
+      {% for e in report.entities %}
+        <li>{{ e }}</li>
+      {% endfor %}
+    </ul>
+
+    <h3 class="mt-2">{{ report.classification_reason_label }}</h3>
+    <p class="muted">{{ report.classification_reason }}</p>
+
+    {% if report.classification == 'True Positive' %}
+      <h3 class="mt-2">{{ report.escalation_label }}</h3>
+      <p class="muted">{{ report.escalation_reason }}</p>
+
+      <h3 class="mt-2">{{ report.remediation_label }}</h3>
+      <ul class="reason-list">
+        {% for action in report.remediation_actions %}
+          <li>{{ loop.index }}. {{ action }}</li>
+        {% endfor %}
+      </ul>
+
+      <h3 class="mt-2">{{ report.indicators_label }}</h3>
+      <ul class="reason-list">
+        {% for ind in report.indicators %}
+          <li class="mono">{{ ind }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}PhishGuard — Phishing Email Detection{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">● live threat detection engine</div>
+      <h1>Catch phishing emails before they catch your team.</h1>
+      <p class="lead">
+        PhishGuard combines rule-based heuristics with a machine-learning
+        text classifier to score suspicious emails in real time — built as
+        a group major project using Python, Flask, SQLAlchemy and scikit-learn.
+      </p>
+      <div class="hero-actions">
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Go to dashboard</a>
+        {% else %}
+          <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Create free account</a>
+          <a href="{{ url_for('main.about') }}" class="btn btn-ghost">How it works</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="scan-card mono">
+      <div class="field">FROM &nbsp;<b>it-support@secure-login-alerts.tk</b></div>
+      <div class="field">SUBJECT &nbsp;<b>URGENT: Your account will be suspended</b></div>
+      <div class="field">LINK &nbsp;<b>http://account-verify-secure.tk/login</b></div>
+      <div class="verdict-tag">⚠ VERDICT: PHISHING · 92/100</div>
+    </div>
+  </div>
+</section>
+
+<section class="container mt-2 mb-2">
+  <div class="section-title"><h2>What it checks</h2></div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>Rule-based heuristics</h3>
+      <p class="muted">Flags urgency language, credential requests, suspicious
+      domains, IP-based links, brand impersonation, and lookalike TLDs
+      commonly used in phishing campaigns.</p>
+    </div>
+    <div class="panel">
+      <h3>Machine learning classifier</h3>
+      <p class="muted">A TF-IDF + Logistic Regression model trained on
+      labeled phishing/legitimate email samples estimates the probability
+      that the wording itself matches known phishing patterns.</p>
+    </div>
+    <div class="panel">
+      <h3>Scan history &amp; dashboard</h3>
+      <p class="muted">Every scan is saved to a database per user, so your
+      team can review past results, track trends, and demonstrate the
+      system during evaluation.</p>
+    </div>
+    <div class="panel">
+      <h3>Explainable results</h3>
+      <p class="muted">Every verdict comes with a plain-English list of
+      exactly which signals triggered it — ideal for a project
+      demo or viva.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

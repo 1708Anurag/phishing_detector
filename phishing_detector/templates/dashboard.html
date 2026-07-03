@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PhishGuard{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="section-title">
+    <h1 style="font-size:1.6rem;">Dashboard</h1>
+    <span class="muted">Signed in as {{ current_user.username }}</span>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="num">{{ total }}</div><div class="label">Total scans</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--danger)">{{ phishing_count }}</div><div class="label">Phishing</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--warn)">{{ suspicious_count }}</div><div class="label">Suspicious</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--safe)">{{ safe_count }}</div><div class="label">Safe</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="section-title">
+        <h3 style="margin:0;">Analyze an email</h3>
+        <button type="button" id="load-demo" class="btn btn-ghost" style="font-size:.78rem; padding:.35rem .7rem;">Load phishing sample</button>
+      </div>
+      <form method="POST" action="{{ url_for('main.scan') }}">
+        <label for="sender">Sender (From)</label>
+        <input type="text" id="sender" name="sender" placeholder="e.g. support@example.com">
+
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="e.g. Verify your account">
+
+        <label for="body">Email body <span class="muted">(paste full text, including any links)</span></label>
+        <textarea id="body" name="body" placeholder="Paste the raw email content here..." required></textarea>
+
+        <button type="submit" class="btn btn-primary">Analyze email</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>Recent scans</h3>
+      {% if recent %}
+        <table>
+          <thead><tr><th>Subject</th><th>Verdict</th><th>Score</th></tr></thead>
+          <tbody>
+          {% for r in recent %}
+            <tr>
+              <td><a href="{{ url_for('main.result', scan_id=r.id) }}">{{ r.subject[:35] }}</a></td>
+              <td>
+                <span class="badge
+                  {% if r.verdict == 'phishing' %}verdict-phishing
+                  {% elif r.verdict == 'suspicious' %}verdict-suspicious
+                  {% else %}verdict-safe{% endif %}">{{ r.verdict }}</span>
+              </td>
+              <td class="mono">{{ r.risk_score }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <p class="mt-2"><a href="{{ url_for('main.history') }}">View full history →</a></p>
+      {% else %}
+        <p class="muted">No scans yet. Analyze your first email to see results here.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

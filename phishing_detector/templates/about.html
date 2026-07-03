@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}About — PhishGuard{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 style="font-size:1.6rem;">About this project</h1>
+  <p class="muted" style="max-width:70ch;">
+    PhishGuard is a major academic project that detects phishing emails by
+    combining a rule-based heuristic engine with a machine-learning text
+    classifier. It is built with Python, Flask, SQLAlchemy (SQLite) and
+    scikit-learn.
+  </p>
+
+  <div class="grid-2 mt-2">
+    <div class="panel">
+      <h3>1. Rule-based heuristics</h3>
+      <p class="muted">Scans sender address, subject and body for urgency
+      language, credential requests, suspicious links (raw IPs, risky TLDs,
+      lookalike brand domains) and mismatched display text.</p>
+    </div>
+    <div class="panel">
+      <h3>2. ML text classifier</h3>
+      <p class="muted">A TF-IDF vectorizer + Logistic Regression model
+      trained on labeled phishing/legitimate samples estimates a phishing
+      probability from the email's wording and style.</p>
+    </div>
+    <div class="panel">
+      <h3>3. Combined risk score</h3>
+      <p class="muted">The final 0–100 score blends 55% heuristic score
+      with 45% ML probability, then maps to Safe / Suspicious / Phishing.</p>
+    </div>
+    <div class="panel">
+      <h3>4. Persistence &amp; auth</h3>
+      <p class="muted">Flask-Login handles authentication; every scan is
+      stored per-user in SQLite via SQLAlchemy for dashboards and history.</p>
+    </div>
+  </div>
+
+  <h2 class="mt-2">Suggested</h2>
+  <table class="panel" style="display:table;">
+    <thead><tr><th>Member</th><th>Module</th><th>Files</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Backend / Auth</td><td class="mono">app.py, auth.py, models.py, extensions.py</td></tr>
+      <tr><td>2</td><td>Detection engine (rules)</td><td class="mono">detection/heuristics.py</td></tr>
+      <tr><td>3</td><td>Detection engine (ML)</td><td class="mono">detection/ml_model.py, detection/dataset.py, detection/analyzer.py</td></tr>
+      <tr><td>4</td><td>Frontend / UI</td><td class="mono">templates/, static/</td></tr>
+      <tr><td>5</td><td>Testing, docs &amp; deployment</td><td class="mono">README.md, test cases, presentation</td></tr>
+    </tbody>
+  </table>
+
+  <p class="muted mt-2">
+    Disclaimer: this tool is for educational and awareness purposes. It is
+    not a substitute for enterprise email security gateways.
+  </p>
+</div>
+{% endblock %}

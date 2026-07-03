@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Scan result — PhishGuard{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="section-title">
+    <h1 style="font-size:1.6rem;">Scan result</h1>
+    <div style="display:flex; gap:.6rem;">
+      <a href="{{ url_for('main.report_view', scan_id=record.id) }}" class="btn btn-primary">Generate SOC report</a>
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-ghost">← Back to dashboard</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg viewBox="0 0 170 170" width="170" height="170">
+          <circle class="gauge-track" cx="85" cy="85" r="70"></circle>
+          <circle class="gauge-fill" cx="85" cy="85" r="70"
+            data-score="{{ record.risk_score }}"
+            style="stroke:
+              {% if record.verdict == 'phishing' %}var(--danger)
+              {% elif record.verdict == 'suspicious' %}var(--warn)
+              {% else %}var(--safe){% endif %};">
+          </circle>
+        </svg>
+        <div class="gauge-center">
+          <div class="score">{{ record.risk_score | round(0, 'floor') | int }}</div>
+          <div class="of100">/ 100 risk</div>
+        </div>
+      </div>
+
+      <div>
+        <span class="verdict-badge
+          {% if record.verdict == 'phishing' %}verdict-phishing
+          {% elif record.verdict == 'suspicious' %}verdict-suspicious
+          {% else %}verdict-safe{% endif %}">
+          {% if record.verdict == 'phishing' %}⚠ PHISHING DETECTED
+          {% elif record.verdict == 'suspicious' %}⚠ SUSPICIOUS
+          {% else %}✓ LIKELY SAFE{% endif %}
+        </span>
+        <p class="muted mt-2" style="margin-top:.8rem;">
+          Subject: <b class="mono">{{ record.subject }}</b><br>
+          Sender: <b class="mono">{{ record.sender }}</b><br>
+          Scanned: {{ record.created_at.strftime('%d %b %Y, %H:%M') }}
+        </p>
+      </div>
+    </div>
+
+    <h3 class="mt-2">Why this verdict?</h3>
+    <ul class="reason-list">
+      {% for reason in reasons %}
+        <li>{{ reason }}</li>
+      {% endfor %}
+    </ul>
+
+    <h3 class="mt-2">Raw email content</h3>
+    <textarea readonly style="min-height:150px;">{{ record.raw_text }}</textarea>
+  </div>
+</div>
+{% endblock %}

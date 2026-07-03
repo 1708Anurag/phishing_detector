@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+instance/
+detection/model.joblib
+detection/vectorizer.joblib
+.venv/
+venv/
+*.db
+.env
